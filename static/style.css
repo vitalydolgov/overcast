@@ -1,0 +1,203 @@
+:root {
+  --sky: #c9d4df;
+  --paper: #f6f8fa;
+  --ink: #1a242e;
+  --mist: #3f5162;
+  --line: #7e92a4;
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Fraunces", "Iowan Old Style", Palatino, Georgia, serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background: var(--sky);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button:not(:disabled),
+[role="button"]:not(:disabled) {
+  cursor: pointer;
+}
+
+main {
+  width: min(100%, 22.5rem);
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+h1 {
+  margin: 0;
+  text-align: center;
+}
+
+.streak-figure {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(6.5rem, 28vw, 8rem);
+  font-weight: 500;
+  font-optical-sizing: auto;
+  line-height: 0.82;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  animation: streak-in 220ms ease-out;
+}
+
+.streak-label {
+  display: block;
+  margin-top: 0.85rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--mist);
+}
+
+.week {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.3rem;
+  width: 100%;
+  margin-top: 3rem;
+  padding: 3px;
+}
+
+.day-form {
+  min-width: 0;
+}
+
+.day {
+  width: 100%;
+  min-height: 3rem;
+  margin: 0;
+  padding: 0.35rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--mist);
+  font: inherit;
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease,
+    opacity 200ms ease,
+    transform 160ms ease;
+}
+
+.day:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.day:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.day:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.day:disabled {
+  opacity: 0.6;
+}
+
+.day[data-state="open"] {
+  border-color: color-mix(in srgb, var(--mist) 40%, transparent);
+  border-style: dashed;
+  background: transparent;
+  color: var(--mist);
+}
+
+.day[data-state="clear"] {
+  border-color: var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.day[data-state="cloudy"] {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.day[data-today] {
+  box-shadow: inset 0 0 0 2px var(--ink);
+}
+
+.day-weekday {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.day-date {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.alert {
+  margin: 1rem 0 0;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--ink);
+}
+
+@keyframes streak-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.35rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .streak-figure,
+  .day {
+    animation: none;
+    transition: none;
+  }
+
+  .day:hover:not(:disabled) {
+    transform: none;
+  }
+}
+
+@media (max-width: 420px) {
+  main {
+    padding-inline: 1rem;
+  }
+
+  .day-weekday {
+    letter-spacing: 0.04em;
+  }
+}

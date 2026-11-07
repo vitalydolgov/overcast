@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#c9d4df" />
+  <title>Overcast</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Outfit:wght@400;500;600&display=swap" />
+  <link rel="stylesheet" href="/static/style.css" />
+  <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+</head>
+<body>
+  <main>
+    <h1 aria-live="polite">
+      <span class="streak-figure" id="streak">{{ streak }}</span>
+      <span class="streak-label">
+        {% if streak == 1 %}cloudy day in a row{% else %}cloudy days in a row{% endif %}
+      </span>
+    </h1>
+
+    <div class="week" aria-label="This week">
+      {% for cell in days %}
+        {% set meta = cell.meta %}
+        {% set state = "cloudy" if cell.cloudy == True else ("clear" if cell.cloudy == False else "open") %}
+        <form
+          class="day-form"
+          hx-post="/save"
+          hx-target="main"
+          hx-select="main"
+          hx-swap="outerHTML"
+          method="post"
+        >
+          <input type="hidden" name="today" value="{{ view_today }}" />
+          <input type="hidden" name="day" value="{{ cell.day }}" />
+          <input type="hidden" name="cloudy" value="{{ cell.next }}" />
+          <button
+            type="submit"
+            aria-pressed="{{ 'true' if cell.cloudy == True else 'false' }}"
+            aria-label="{{ meta.weekday }} {{ meta.date }}, {{ state }}"
+            class="day"
+            data-state="{{ state }}"
+            {% if cell.day == view_today %}data-today{% endif %}
+          >
+            <span class="day-weekday">{{ meta.short }}</span>
+            <span class="day-date">{{ meta.date }}</span>
+          </button>
+        </form>
+      {% endfor %}
+    </div>
+
+    {% if error %}
+      <p class="alert" role="alert">{{ error }}</p>
+    {% endif %}
+  </main>
+</body>
+</html>
