@@ -110,7 +110,7 @@ h1 {
 }
 
 .day:hover:not(:disabled) {
-  transform: translateY(-1px);
+  transform: none;
 }
 
 .day:active:not(:disabled) {
