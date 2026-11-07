@@ -133,10 +133,16 @@ h1 {
   color: var(--mist);
 }
 
-.day[data-state="clear"] {
-  border-color: var(--ink);
-  background: var(--paper);
-  color: var(--ink);
+.day[data-state="ok"] {
+  border-color: #888e94;
+  background: #888e94;
+  color: #f6f8fa;
+}
+
+.day[data-state="good"] {
+  border-color: #888888;
+  background: #f6f8fa;
+  color: #1a242e;
 }
 
 .day[data-state="cloudy"] {

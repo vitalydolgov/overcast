@@ -23,7 +23,8 @@
     <div class="week" aria-label="This week">
       {% for cell in days %}
         {% set meta = cell.meta %}
-        {% set state = "cloudy" if cell.cloudy == True else ("clear" if cell.cloudy == False else "open") %}
+        {% set state = "cloudy" if cell.cloudy == 0 else ("ok" if cell.cloudy == 1 else ("good" if cell.cloudy == 2 else "open")) %}
+        {% set state_name = "cloudy" if cell.cloudy == 0 else ("ok weather" if cell.cloudy == 1 else ("good weather" if cell.cloudy == 2 else "not marked")) %}
         <form
           class="day-form"
           hx-post="/save"
@@ -34,11 +35,12 @@
         >
           <input type="hidden" name="today" value="{{ view_today }}" />
           <input type="hidden" name="day" value="{{ cell.day }}" />
-          <input type="hidden" name="cloudy" value="{{ cell.next }}" />
+          {# cell.next cycles None -> 0 -> 1 -> 2 -> None (see read_view in app.py); Jinja renders None as "None", which /save parses as delete #}
+          <input type="hidden" name="cloudy" value="{{ cell.next if cell.next is not none else 'None' }}" />
           <button
             type="submit"
-            aria-pressed="{{ 'true' if cell.cloudy == True else 'false' }}"
-            aria-label="{{ meta.weekday }} {{ meta.date }}, {{ state }}"
+            aria-pressed="{{ 'true' if cell.cloudy == 0 else 'false' }}"
+            aria-label="{{ meta.weekday }} {{ meta.date }}, {{ state_name }}"
             class="day"
             data-state="{{ state }}"
             {% if cell.day == view_today %}data-today{% endif %}

@@ -55,11 +55,11 @@ def streak_ending(today: str, marks: list[dict]) -> int:
     cursor = today
     if cursor not in map_:
         cursor = shift_day(today, -1)
-    elif not map_.get(cursor, False):
+    elif map_.get(cursor) != 0:
         return 0
     count = 0
     for _ in range(20000):
-        if map_.get(cursor) is True:
+        if map_.get(cursor) == 0:
             count += 1
             cursor = shift_day(cursor, -1)
         else:

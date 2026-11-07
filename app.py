@@ -41,7 +41,7 @@ def read_view(today: str, from_day: str, to_day: str):
     conn = sqlite3.connect(DB_PATH)
     rows = conn.execute("SELECT day, cloudy FROM cloudy_days").fetchall()
     conn.close()
-    marks = [{"day": row[0], "cloudy": bool(row[1])} for row in rows]
+    marks = [{"day": row[0], "cloudy": int(row[1]) if row[1] is not None else None} for row in rows]
     by_day = {m["day"]: m["cloudy"] for m in marks}
     days = []
     cursor = from_day
@@ -62,7 +62,7 @@ def read_view(today: str, from_day: str, to_day: str):
                 "day": d["day"],
                 "cloudy": d["cloudy"],
                 "meta": parts(d["day"]),
-                "next": True if d["cloudy"] is None else (False if d["cloudy"] else None),
+                "next": {None: 0, 0: 1, 1: 2, 2: None}[d["cloudy"]],
             }
             for d in days
         ],
@@ -86,12 +86,10 @@ async def save(
     day: str = Form(...),
     cloudy: str = Form(...),
 ):
-    # Parse cloudy: "True" / "False" / "None" (string)
+    # Parse cloudy: "0" / "1" / "2" / anything else (None => delete)
     cloud_val = None
-    if cloudy == "True":
-        cloud_val = True
-    elif cloudy == "False":
-        cloud_val = False
+    if cloudy in ("0", "1", "2"):
+        cloud_val = int(cloudy)
     else:
         cloud_val = None
 
@@ -101,7 +99,7 @@ async def save(
     else:
         conn.execute(
             "INSERT INTO cloudy_days (day, cloudy) VALUES (?, ?) ON CONFLICT(day) DO UPDATE SET cloudy = excluded.cloudy",
-            (day, 1 if cloud_val else 0),
+            (day, cloud_val),
         )
     conn.commit()
     conn.close()
