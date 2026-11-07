@@ -1,0 +1,10 @@
+.venv
+.git
+.grok
+__pycache__
+*.pyc
+overcast.db
+server.log
+start.sh
+Dockerfile
+.dockerignore

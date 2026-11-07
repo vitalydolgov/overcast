@@ -9,7 +9,7 @@ from datetime import datetime
 
 from streak import local_today, shift_day, streak_ending, parts, days_from
 
-DB_PATH = os.path.join(os.path.dirname(__file__), "overcast.db")
+DB_PATH = os.environ.get("DB_PATH", os.path.join(os.path.dirname(__file__), "overcast.db"))
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory=os.path.join(os.path.dirname(__file__), "static")), name="static")
